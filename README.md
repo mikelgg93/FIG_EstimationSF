@@ -1,6 +1,6 @@
 # FIG_EstimationSF
 
-As seen in the paper: XXX
+As seen in the paper entitled 2D peripheral image quality metrics with different types of multifocal contact lenses.
 
 Use as FIG_EstimationSF() to obtain the same image as the one printed in the article.
 
