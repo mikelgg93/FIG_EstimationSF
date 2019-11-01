@@ -18,7 +18,7 @@ if nargin<1
 end
 %% Subplot A - Piecewise surface linear function 
 subplot 121
-[fitresult]= estimateSFCutOFF();
+[fitresult, x2, y2, z2]= estimateSFCutOFF();
 p= plot(fitresult,'style','Surface');
 alpha(p, .7);
 colormap summer
@@ -26,20 +26,20 @@ view(31.3, 28.72);
 yticks(gca,[1 10 20 30 40])
 yticklabels(gca,{'-20°','-10°','0°','+10°','+20°'});
 xticks(gca,[-9 1 10 20 30 40 50 60 70 80 90])
-xticklabels(gca,{'-50°','-40°','-30°','-20°','-10°','0°','10°','20°','30°','40°','50°'});
-
-xtickangle(40);ytickangle(-10);
-xlabel(['    _T_e_m_p_o_r_a_l                            _N_a_s_a_l',newline,'Horizontal Meridian    '], 'rotation', -14);
+xticklabels(gca,{'-50°','-40°','-30°','-20°','-10°','0°','+10°','+20°','+30°','+40°','+50°'});
+xtickangle(40);ytickangle(-11);
+xlabel(['    _T_e_m_p_o_r_a_l',repmat(' ', 1, 15) ,'_N_a_s_a_l',newline,'      Horizontal Meridian    '],...
+    'rotation', -17);
 xh = get(gca,'xlabel'); % handle to the label object
 p1 = get(xh,'position'); % get the current position property
 p1(2) = 8.5;p1(1)= 5 ;        % double the distance,                        
 set(xh,'position',p1);   % set the new position
-ylabel('Vertical Meridian','rotation', 35);
+ylabel('Vertical Meridian   ','rotation', 40, 'Position', [95.84599516359482,18.362540860235416,-20.530239450109324]);
 yh = get(gca,'ylabel'); % handle to the label object
 p1 = get(yh,'position'); % get the current position property
 p1(2) = 20;p1(1)= 100 ;        % double the distance,                        
 set(yh,'position',p1) 
-zlabel(['SF Cut off',newline,' cyc/deg.'],'rotation',0);
+zlabel(['SF Cut off',newline,' cyc/deg.'],'rotation',0,'Position',[-52.48788763848303,1.533962359122143,18.149129156122857]);
 zh = get(gca,'zlabel'); % handle to the label object
 p1 = get(zh,'position'); % get the current position property
 p1(2) = 0;p1(1)= -60 ;  p1(3)= 20;      % double the distance,                        
@@ -57,17 +57,18 @@ s3= scatter3(x2(7:end), y2(7:end), z2(7:end),100,...
 h2 = findobj(gca,'Type','line'); set(h2,'LineWidth',2, 'Color', 'k');
 h3= findall(findall(0, 'Type', 'Scatter'),'-property','LineWidth');set(h3,'LineWidth',2);set(gca,'linewidth',1.5);
 set(findall(findall(0, 'Type', 'figure'),'-property','MarkerEdgeColor'),'MarkerEdgeColor','k');
-set(findall(findall(0, 'Type', 'figure'),'-property','FontSize'),'FontSize',12);
+set(findall(findall(0, 'Type', 'figure'),'-property','FontSize'),'FontSize',13);
 set(findall(findall(0, 'Type', 'figure'),'-property','FontWeight'),'FontWeight','bold');
-legend({'L.N.Thibos  1987','R. Rosen 2014','Anderson 1991'},'Location','northeast','NumColumns',1);
+legend({'L.N.Thibos  1987','R. Rosen 2014','Anderson 1991'},'Location',[0.3243,0.668,0.1673,0.1464],'NumColumns',1);
 
 %% Subplot B - Representation of images under lowpass filter to the SFCutoff.
 subplot 122
 title(['B) Low pass filtered reference image by SF_c_u_t_o_f_f', newline]);
 fdrawsegmentation2;
 h2 = findobj(gca,'Type','line'); set(h2,'LineWidth',2, 'Color', 'k');
-set(findall(findall(0, 'Type', 'figure'),'-property','FontSize'),'FontSize',12);
-set(findall(findall(0, 'Type', 'figure'),'-property','FontWeight'),'FontWeight','bold');set(gca,'linewidth',1.5);
+set(findall(findall(0, 'Type', 'figure'),'-property','FontSize'),'FontSize',13);
+set(findall(findall(0, 'Type', 'figure'),'-property','FontWeight'),'FontWeight','bold');
+set(findall(gca,'-property','LineWidth'),'LineWidth',2);
 set(gcf, 'Position',[174.6 293.8 1132 468.0]);
 hold on; 
 axes('pos',[.65 .43 .15 .15]) % Image at fovea
@@ -83,7 +84,7 @@ axes('pos',[.525 .43 .15 .15])
 imshow(simulateimage(1,3, imageDir));
 
 %% Functions
-function [fitresult]= estimateSFCutOFF()
+function [fitresult, x2, y2, z2]= estimateSFCutOFF()
     %Get a fit using the data reported in the literature
 x2= [41 21 6 ...%
     41 41 61 21 ...%
@@ -102,7 +103,7 @@ function [simIm] = simulateimage(angle, meridian, imageDir)
 % Apply a low pass filter to the image according to the SF cutoff
 %     corresponding to the location.
 % For fovea, meridian = 3; angle= 0; 
-img= imread(imageDir);
+img= rgb2gray(imread(imageDir));
 fineimage= imresize(img, [256 256]);
 Sz=size(fineimage);
 [x, y]= meshgrid(-Sz(2)/2:(Sz(2)/2-1),...
@@ -136,6 +137,7 @@ xticks(gca,[1 10 20 30 40])
 xticklabels(gca,{'-20°','-10°','0°','10°','20°'});
 yticks(gca,[1 10 20 30 40])
 yticklabels(gca,{'+20°','+10°','0°','-10°','-20°'});
+xline(max(xlim)); yline(max(ylim));
 for nn= 5:5:20
     a=nn*1; % horizontal radius
     b=nn*1; % vertical radius
